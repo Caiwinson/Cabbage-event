@@ -49,7 +49,7 @@ async def on_button_click(res):
                     b[i][j].style=ButtonStyle.red
                     b[i][j].disabled=True
                     break
-        await ctx.respond(type=7, content=round(time.time()-s, 2) + " seconds",components=b)
+        await ctx.respond(type=7, content=str(round(time.time()-s, 2)) + " seconds",components=b)
 @client.command()
 async def test(ctx):
     await ctx.send("test", components=[Button(label="Play", style=ButtonStyle.green)])
