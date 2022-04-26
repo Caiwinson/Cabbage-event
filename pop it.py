@@ -31,9 +31,8 @@ async def on_button_click(res):
         s=time.time()
         def check(ctx):
             return ctx.message.content.startswith(id)
-        while count>1:
+        while True:
             ctx=await client.wait_for('button_click', check=check)
-            #replace the 24th button with a red button
             for i in range(5):
                 for j in range(5):
                     if b[i][j].label==ctx.component.label:
@@ -41,15 +40,11 @@ async def on_button_click(res):
                         b[i][j].disabled=True
                         break
             count-=1
-            await ctx.respond(type=7, components=b)
-        ctx=await client.wait_for('button_click', check=check)
-        for i in range(5):
-            for j in range(5):
-                if b[i][j].label==ctx.component.label:
-                    b[i][j].style=ButtonStyle.red
-                    b[i][j].disabled=True
-                    break
-        await ctx.respond(type=7, content=str(round(time.time()-s, 2)) + " seconds",components=b)
+            if count>0:
+                await ctx.respond(type=7, components=b)
+            else:
+                await ctx.respond(type=7, content=str(round(time.time()-s, 2)) + " seconds",components=b)
+                break
 @client.command()
 async def test(ctx):
     await ctx.send("test", components=[Button(label="Play", style=ButtonStyle.green)])
