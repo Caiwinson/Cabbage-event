@@ -14,6 +14,6 @@ async def on_ready():
 @client.event
 async def on_button_click(res):
     if res.component.label=="Play":
-        #code for play and what
+        #code block
         pass
 client.run(get_token())
