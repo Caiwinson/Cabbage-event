@@ -1,5 +1,4 @@
 import discord
-print(discord.__file__)
 from discord.ext import commands
 from discord_components import DiscordComponents, Button, ButtonStyle
 import random
