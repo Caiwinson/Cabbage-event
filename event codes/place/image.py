@@ -1,9 +1,9 @@
 from flask import Flask, send_from_directory
 from threading import Thread
 app=Flask(__name__)
-@app.route('/full.png')
-def raw():
-    return send_from_directory('.', 'full.png')
+@app.route('/<id>', methods=["GET"])
+def raw(id):
+    return send_from_directory('.', 'event codes/placeplace/'+id)
 @app.route('/')
 def index():
     return send_from_directory('.', 'raw.png')
