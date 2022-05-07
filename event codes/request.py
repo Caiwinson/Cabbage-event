@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 from discord_components import DiscordComponents, Button, ButtonStyle
-client=commands.Bot(command_prefix='!')
+from discord.utils import get
+client=commands.Bot(command_prefix='!', intents=discord.Intents.all())
 DiscordComponents(client)
 def get_token():
     with open('token.txt', 'r') as f:
@@ -32,7 +33,35 @@ async def on_button_click(res):
             embed.add_field(name="Ping", value=ping.component.label)
         if msg.attachments:
             embed.set_image(url=msg.attachments[0].url)
-        await client.get_channel(956850251803791390).send(embed=embed.add_field(name="User ID", value=res.author.id))
+        c=[]
+        if res.component.label!="Report":
+            c=[Button(label="Yes", style=ButtonStyle.green), Button(label="No", style=ButtonStyle.red)]
+        await client.get_channel(956850251803791390).send(embed=embed.add_field(name="User ID", value=res.author.id), components=c)
+        await msg.reply("Your request has been sent")
+    if res.channel.id==956850251803791390:
+        if res.component.label=="Yes":
+            await res.author.send("Your request has been approved")
+            embed=res.message.embeds[0]
+            user=res.guild.get_member(int(embed.fields[-1].value))
+            type=embed.title
+            content=embed.description
+            image=None
+            if embed.image:
+                image=embed.image.url
+            embed.add_field(name="Status", value="Approved")
+            if type=="Change Nickname":
+                await res.guild.get_member(user.id).edit(nick=content)
+            elif type=="Announcement":
+                if embed.fields[0].value=="Yes":
+                    ping="<@&869132302746275882>"
+                else:
+                    ping=""
+                anc=discord.Embed(title=str(user) + " has made an announcement", description=content, color=user.color)
+                if image:
+                    anc.set_image(url=image)
+                webhook=get(await res.channel.webhooks(), name="Announcements")
+                await webhook.send(content=ping, username=user.name, avatar_url=user.avatar_url, embed=anc)
+
 @client.command()
 async def test(ctx):
     await ctx.send("What would you Request for?", components=[Button(label="Change Nickname", style=ButtonStyle.blue, emoji="✏️"), Button(label="Announcement", style=ButtonStyle.green, emoji="📢"), Button(label="Report", style=ButtonStyle.red, emoji="📢"), Button(label="Suggestion", style=ButtonStyle.grey, emoji="📝")])
