@@ -59,9 +59,17 @@ async def on_button_click(res):
                 anc=discord.Embed(title=str(user) + " has made an announcement", description=content, color=user.color)
                 if image:
                     anc.set_image(url=image)
-                webhook=get(await res.channel.webhooks(), name="Announcements")
+                webhook=get(await client.get_channel(869132303694172187).webhooks(), name="Sub")
                 await webhook.send(content=ping, username=user.name, avatar_url=user.avatar_url, embed=anc)
-
+            elif type=="Suggestion":
+                embed = discord.Embed(
+                    title=f"{user} suggest\n{content}\nVote below",
+                    colour=user.color).set_author(
+                        name=user.author.name, icon_url=user.author.avatar_url)
+                suggestchannel = client.get_channel(869132303694172189)
+                msg = await suggestchannel.send("@here", embed=embed)
+                await msg.add_reaction("✅")
+                await msg.add_reaction("❌")
 @client.command()
 async def test(ctx):
     await ctx.send("What would you Request for?", components=[Button(label="Change Nickname", style=ButtonStyle.blue, emoji="✏️"), Button(label="Announcement", style=ButtonStyle.green, emoji="📢"), Button(label="Report", style=ButtonStyle.red, emoji="📢"), Button(label="Suggestion", style=ButtonStyle.grey, emoji="📝")])
