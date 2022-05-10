@@ -1,5 +1,5 @@
 import discord
-from PIL import Image
+from PIL import Image, ImageDraw, ImageOps
 from discord.ext import commands
 import requests
 client=commands.Bot(command_prefix='!', intents=discord.Intents.all())
@@ -17,8 +17,8 @@ async def on_ready():
 async def rank(ctx, user:discord.Member=None):
     if user is None:
         user=ctx.author
-    exp=
-    def drawProgressBar(d, x, y, w, h, progress, bg=0, fg=0xff0000):
+    exp=requests.get(f"https://api.tatsu.gg/v1/guilds/869132302746275880/rankings/members/{user.id}/all", headers={"Authorization": "9ps9HkTEc5-UjGF4DY4YbIFicb2KQTE9L"}).json()["score"]
+    def drawProgressBar(d, x, y, w, h, progress, bg="gray", fg="yellow"):
         # draw background
         d.ellipse((x+w, y, x+h+w, y+h), fill=bg)
         d.ellipse((x, y, x+h, y+h), fill=bg)
@@ -29,10 +29,20 @@ async def rank(ctx, user:discord.Member=None):
         d.ellipse((x+w, y, x+h+w, y+h),fill=fg)
         d.ellipse((x, y, x+h, y+h),fill=fg)
         d.rectangle((x+(h/2), y, x+w+(h/2), y+h),fill=fg)
-    for level, r_exp in table.items():
-        if exp<r_exp:
-            break
-    progress=(exp-r_exp)/(r_exp-table[level])
-    img
+    for lvl, rexp in table.items():
+        if exp >= rexp:
+            level = int(lvl)
+    current_exp=exp-table[str(level)]   
+    next_exp=table[str(level+1)]-table[str(level)]
+    progress=current_exp/next_exp
+    img=Image.open('codes/rank/background.png')
+    d=ImageDraw.Draw(img)
+    avatar=Image.open(requests.get(user.avatar_url_as(format='png', size=256), stream=True).raw).convert('RGBA').resize((256,256))
+    avatar = ImageOps.expand(avatar, border=5, fill=(255, 255, 255))
+    avatar = avatar.resize((250, 250))
+    img.paste(avatar, (42, 37), avatar)
+    drawProgressBar(d, 100, 400, 800, 50, progress)
+    img.save('codes/rank/rank.png')
+    await ctx.send(file=discord.File('codes/rank/rank.png'))
 
 client.run(get_token())
