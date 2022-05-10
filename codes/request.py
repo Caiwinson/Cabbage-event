@@ -26,7 +26,7 @@ async def on_button_click(res):
         def check(n):
             return n.author==res.author and n.channel.type==discord.ChannelType.private
         msg=await client.wait_for('message',check=check)
-        embed=discord.Embed(title=res.component.label, description=msg.content, color=0x00ff00).set_author(name=str(res.author), icon_url=res.author.avatar_url)
+        embed=discord.Embed(title=res.component.label, description=msg.content, color=res.author.color).set_author(name=str(res.author), icon_url=res.author.avatar_url)
         if res.component.label=="Announcement":
             await msg.reply("Would you like to ping <@&869132302746275882>", components=[Button(label="Yes", style=ButtonStyle.green), Button(label="No", style=ButtonStyle.red)])
             ping=await client.wait_for('button_click',check=check)
@@ -38,7 +38,7 @@ async def on_button_click(res):
             c=[Button(label="Yes", style=ButtonStyle.green), Button(label="No", style=ButtonStyle.red)]
         await client.get_channel(956850251803791390).send(embed=embed.add_field(name="User ID", value=res.author.id), components=c)
         await msg.reply("Your request has been sent")
-    if res.channel.id==956850251803791390:
+    elif res.channel.id==956850251803791390:
         if res.component.label=="Yes":
             await res.author.send("Your request has been approved")
             embed=res.message.embeds[0]
@@ -70,6 +70,11 @@ async def on_button_click(res):
                 msg = await suggestchannel.send("@here", embed=embed)
                 await msg.add_reaction("✅")
                 await msg.add_reaction("❌")
+        elif res.component.label=="No":
+            await res.author.send("Your request has been rejected")
+            embed=res.message.embeds[0]
+            embed.add_field(name="Status", value="Rejected")
+        await res.respond(type=7,embed=embed, components=[[Button(label="Yes", style=ButtonStyle.green, disabled=True), Button(label="No", style=ButtonStyle.red, disabled=True)]])
 @client.command()
 async def test(ctx):
     await ctx.send("What would you Request for?", components=[Button(label="Change Nickname", style=ButtonStyle.blue, emoji="✏️"), Button(label="Announcement", style=ButtonStyle.green, emoji="📢"), Button(label="Report", style=ButtonStyle.red, emoji="📢"), Button(label="Suggestion", style=ButtonStyle.grey, emoji="📝")])
