@@ -1,3 +1,4 @@
+from contextlib import suppress
 import discord
 from discord.ext import commands, tasks
 import requests
@@ -31,15 +32,14 @@ async def on_button_click(res):
             msg=res.message
             def check(m):
                 return m.message==msg
-        await res.respond(type=6)
+        await res.respond(type=7,content="Loading...",components=[])
         data=requests.get("https://animelist.caiwinson.repl.co/get").json()["data"]
         picked=random.choice(data)
         embed=discord.Embed(title="Who is this?").set_image(url=picked[1])
         buttons=[]
-        o=[]
         for i in data:
             buttons.append(Button(label=i[0],style=ButtonStyle.blue))
-        await msg.edit(type=7, embed=embed, components=buttons, content="")
+        await msg.edit(embed=embed, components=buttons, content="")
         ctx=await client.wait_for("button_click", check=check)
         if ctx.component.label==picked[0]:
             embed=discord.Embed(title="You won", description=picked[0],colour=0x00ff00).set_image(url=picked[1])
