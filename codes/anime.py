@@ -8,21 +8,12 @@ import random
 def get_token():
     with open('token.txt', 'r') as f:
         return f.read()
-a_list=[]
-@tasks.loop(minutes=1)
-async def load():
-    for _ in range(10):
-        data=requests.get("https://api.jikan.moe/v4/random/characters").json()["data"]
-        data=[data['name'], data['images']['jpg']['image_url']]
-        if data not in a_list:
-            a_list.append(data)
 @client.event
 async def on_ready():
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
     print('------')
-    load.start()
 @client.event
 async def on_button_click(res):
     if res.component.label in ["Play", "Play Again"]:
@@ -41,7 +32,7 @@ async def on_button_click(res):
             def check(m):
                 return m.message==msg
         await res.respond(type=6)
-        data=random.sample(a_list,4)
+        data=requests.get("https://animelist.caiwinson.repl.co/get").json()["data"]
         picked=random.choice(data)
         embed=discord.Embed(title="Who is this?").set_image(url=picked[1])
         buttons=[]
