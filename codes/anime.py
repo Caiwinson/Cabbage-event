@@ -32,7 +32,8 @@ async def on_button_click(res):
             msg=res.message
             def check(m):
                 return m.message==msg
-        await res.respond(type=7,content="Loading...",components=[])
+        embed=discord.Embed(title="Who is this?").set_image(url="https://upload.wikimedia.org/wikipedia/commons/7/7a/MyAnimeList_Logo.png")
+        await res.respond(type=7,content="Loading...",components=[],embed=embed)
         data=requests.get("https://animelist.caiwinson.repl.co/get").json()["data"]
         picked=random.choice(data)
         embed=discord.Embed(title="Who is this?").set_image(url=picked[1])
