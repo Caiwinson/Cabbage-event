@@ -32,7 +32,8 @@ async def on_button_click(res):
             msg=res.message
             def check(m):
                 return m.message==msg
-        await res.respond(type=7,content="Loading...",components=[])
+        embed=discord.Embed(title="Who is this?").set_image(url="https://upload.wikimedia.org/wikipedia/commons/7/7a/MyAnimeList_Logo.png")
+        await res.respond(type=7,content="Loading...",components=[],embed=embed)
         data=requests.get("https://animelist.caiwinson.repl.co/get").json()["data"]
         picked=random.choice(data)
         embed=discord.Embed(title="Who is this?").set_image(url=picked[1])
@@ -45,7 +46,7 @@ async def on_button_click(res):
             embed=discord.Embed(title="You won", description=picked[0],colour=0x00ff00).set_image(url=picked[1])
         else:
             embed=discord.Embed(title="You lost", description=picked[0],colour=0xff0000).set_image(url=picked[1]).set_footer(text="You picked {}".format(ctx.component.label))
-        await ctx.respond(type=7, embed=embed, components=[Button(label="Play Again", style=ButtonStyle.green)], content="")
+        await ctx.respond(type=7, embed=embed, components=[Button(label="Play Again", style=ButtonStyle.green), Button(label="Close", emoji="❌",style=ButtonStyle.red)], content="")
 @client.command()
 async def test(ctx):
     await ctx.send("test", components=[Button(label="Play")])
