@@ -46,7 +46,7 @@ async def on_button_click(res):
             embed=discord.Embed(title="You won", description=picked[0],colour=0x00ff00).set_image(url=picked[1])
         else:
             embed=discord.Embed(title="You lost", description=picked[0],colour=0xff0000).set_image(url=picked[1]).set_footer(text="You picked {}".format(ctx.component.label))
-        await ctx.respond(type=7, embed=embed, components=[Button(label="Play Again", style=ButtonStyle.green)], content="")
+        await ctx.respond(type=7, embed=embed, components=[Button(label="Play Again", style=ButtonStyle.green), Button(label="Close", emoji="❌",style=ButtonStyle.red)], content="")
 @client.command()
 async def test(ctx):
     await ctx.send("test", components=[Button(label="Play")])
