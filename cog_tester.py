@@ -1,7 +1,7 @@
 #Import module
 import discord
 from discord.ext import commands
-from discord_components import DiscordComponents
+from discord_components import DiscordComponents, Button,ButtonStyle
 
 #discord client
 intents = discord.Intents.default()
