@@ -8,7 +8,7 @@ intents = discord.Intents.default()
 intents.guilds=True
 intents.messages=True
 intents.members=True
-client=commands.Bot(command_prefix="", intents=intents)
+client=commands.Bot(command_prefix="!", intents=intents)
 def get_token():
     with open('token.txt', 'r') as f:
         return f.read()
