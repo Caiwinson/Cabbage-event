@@ -1,18 +1,13 @@
 #Import module
 import discord
 from discord.ext import commands
-from discord_components import DiscordComponents, Button,ButtonStyle
 
 #discord client
-intents = discord.Intents.default()
-intents.guilds=True
-intents.messages=True
-intents.members=True
+intents = discord.Intents.all()
 client=commands.Bot(command_prefix="!", intents=intents)
 def get_token():
     with open('token.txt', 'r') as f:
         return f.read()
-DiscordComponents(client)
 @client.event
 async def on_ready():
     print(client.user)
@@ -36,11 +31,8 @@ async def run(ctx, *,command):
             await ctx.message.add_reaction("✅")
 @client.command()
 async def load(ctx, cog):
-    client.load_extension(f"codes.{cog}")
+    await client.load_extension(f"codes.{cog}")
 @client.command()
 async def reload(ctx, cog):
-    client.reload_extension(f"codes.{cog}")
-@client.command()
-async def test(ctx):
-    await ctx.send("test", components=[Button(label="Play", style=ButtonStyle.green)])
+    await client.reload_extension(f"codes.{cog}")
 client.run(get_token())
